@@ -41,10 +41,14 @@ class Capistrano::Notifier::Mail < Capistrano::Notifier::Base
   end
 
   def perform
-    if defined?(ActionMailer::Base) && ActionMailer::Base.respond_to?(:mail)
-      perform_with_action_mailer
-    else
-      perform_with_legacy_action_mailer
+    begin
+      if defined?(ActionMailer::Base) && ActionMailer::Base.respond_to?(:mail)
+        perform_with_action_mailer
+      else
+        perform_with_legacy_action_mailer
+      end
+    rescue Exception => e
+      puts e.message
     end
   end
 
@@ -107,7 +111,7 @@ class Capistrano::Notifier::Mail < Capistrano::Notifier::Base
   def template(template_name)
     config_file = "#{templates_path}/#{template_name}"
 
-    unless File.exists?(config_file)
+    unless File.exist?(config_file)
       config_file = File.join(File.dirname(__FILE__), "templates/#{template_name}")
     end
 
