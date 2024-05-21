@@ -115,7 +115,7 @@ class Capistrano::Notifier::Mail < Capistrano::Notifier::Base
       config_file = File.join(File.dirname(__FILE__), "templates/#{template_name}")
     end
 
-    ERB.new(File.read(config_file), nil, '-').result(binding)
+    ERB.new(File.read(config_file), trim_mode: '-').result(binding)
   end
 
   def templates_path
